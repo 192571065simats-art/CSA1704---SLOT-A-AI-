@@ -1,0 +1,159 @@
+
+
+```python
+# -------------------------------
+# 1. Problem-Solving Agent
+# -------------------------------
+
+def problem_solving_agent(goal):
+    if goal == "College":
+        return "Move to College"
+    elif goal == "Hospital":
+        return "Move to Hospital"
+    elif goal == "Home":
+        return "Move to Home"
+    else:
+        return "Goal Not Found"
+
+print("===== Problem-Solving Agent =====")
+goal = input("Enter Goal: ")
+print("Action:", problem_solving_agent(goal))
+
+
+# -------------------------------
+# 2. Water Jug Problem
+# -------------------------------
+
+print("\n===== Water Jug Problem =====")
+
+steps = [
+    (0, 0),
+    (0, 3),
+    (3, 0),
+    (3, 3),
+    (4, 2),
+    (0, 2),
+    (2, 0)
+]
+
+for i, state in enumerate(steps):
+    print(f"Step {i}: 4-gallon = {state[0]}, 3-gallon = {state[1]}")
+
+print("Goal Achieved: 2 gallons in the 4-gallon jug.")
+
+
+# -------------------------------
+# 3. Mars Rover Agent
+# -------------------------------
+
+print("\n===== Mars Rover Agent =====")
+
+destination = False
+obstacle = False
+
+while not destination:
+    if obstacle:
+        print("Obstacle detected! Changing direction...")
+    else:
+        print("Moving towards destination...")
+        destination = True
+
+print("Destination reached successfully.")
+
+
+# -------------------------------
+# 4. 8-Queens Problem
+# -------------------------------
+
+print("\n===== 8-Queens Problem =====")
+
+N = 8
+board = [[0] * N for _ in range(N)]
+
+def is_safe(board, row, col):
+    for i in range(col):
+        if board[row][i]:
+            return False
+
+    i, j = row, col
+    while i >= 0 and j >= 0:
+        if board[i][j]:
+            return False
+        i -= 1
+        j -= 1
+
+    i, j = row, col
+    while i < N and j >= 0:
+        if board[i][j]:
+            return False
+        i += 1
+        j -= 1
+
+    return True
+
+def solve(board, col):
+    if col >= N:
+        return True
+
+    for i in range(N):
+        if is_safe(board, i, col):
+            board[i][col] = 1
+
+            if solve(board, col + 1):
+                return True
+
+            board[i][col] = 0
+
+    return False
+
+if solve(board, 0):
+    print("8-Queens Solution:")
+    for row in board:
+        print(row)
+else:
+    print("No Solution Exists")
+
+
+# -------------------------------
+# 5. Uniform Cost Search (UCS)
+# -------------------------------
+
+print("\n===== Uniform Cost Search =====")
+
+import heapq
+
+graph = {
+    'S': [('A', 1), ('G', 12)],
+    'A': [('B', 3), ('C', 1)],
+    'B': [('D', 3)],
+    'C': [('D', 1), ('G', 2)],
+    'D': [('G', 3)],
+    'G': []
+}
+
+def uniform_cost_search(graph, start, goal):
+    priority_queue = [(0, start, [start])]
+    visited = set()
+
+    while priority_queue:
+        cost, node, path = heapq.heappop(priority_queue)
+
+        if node == goal:
+            return path, cost
+
+        if node not in visited:
+            visited.add(node)
+
+            for neighbor, weight in graph[node]:
+                if neighbor not in visited:
+                    heapq.heappush(priority_queue, (cost + weight, neighbor, path + [neighbor]))
+
+    return None, float('inf')
+
+path, cost = uniform_cost_search(graph, 'S', 'G')
+
+print("Shortest Path:", " -> ".join(path))
+print("Total Cost:", cost)
+```
+
+
