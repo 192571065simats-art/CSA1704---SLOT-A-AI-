@@ -1,0 +1,269 @@
+# ==========================================================
+# PROGRAM 1 : WATER JUG PROBLEM
+# ==========================================================
+
+from collections import deque
+
+def is_visited(state, visited):
+    return state in visited
+
+def water_jug(capacity1, capacity2, target):
+
+    visited = set()
+    queue = deque()
+    queue.append(((0, 0), []))
+
+    while queue:
+
+        (jug1, jug2), path = queue.popleft()
+
+        if is_visited((jug1, jug2), visited):
+            continue
+
+        visited.add((jug1, jug2))
+        path = path + [(jug1, jug2)]
+
+        if jug1 == target or jug2 == target:
+            print("Target Reached")
+            print("Steps:")
+            for step in path:
+                print(step)
+            break
+
+        queue.append(((capacity1, jug2), path))
+        queue.append(((jug1, capacity2), path))
+        queue.append(((0, jug2), path))
+        queue.append(((jug1, 0), path))
+
+        transfer = min(jug1, capacity2 - jug2)
+        queue.append(((jug1 - transfer, jug2 + transfer), path))
+
+        transfer = min(jug2, capacity1 - jug1)
+        queue.append(((jug1 + transfer, jug2 - transfer), path))
+
+jug1_capacity = 4
+jug2_capacity = 3
+target = 2
+
+water_jug(jug1_capacity, jug2_capacity, target)
+
+
+# ==========================================================
+# PROGRAM 2 : MARS ROVER
+# ==========================================================
+
+class MarsRover:
+
+    def __init__(self):
+        self.location = "Landing Site"
+        self.energy = 100
+
+    def move_forward(self):
+        self.energy -= 10
+        print("Rover moved forward")
+
+    def turn_left(self):
+        self.energy -= 5
+        print("Rover turned left")
+
+    def turn_right(self):
+        self.energy -= 5
+        print("Rover turned right")
+
+    def detect_obstacle(self):
+        print("Obstacle detected")
+
+    def collect_sample(self):
+        self.energy -= 15
+        print("Sample collected")
+
+    def analyze_sample(self):
+        self.energy -= 10
+        print("Sample analyzed")
+
+    def capture_image(self):
+        self.energy -= 5
+        print("Image captured")
+
+    def send_data(self):
+        self.energy -= 5
+        print("Data sent to Earth")
+
+rover = MarsRover()
+
+rover.move_forward()
+rover.collect_sample()
+rover.analyze_sample()
+rover.capture_image()
+rover.send_data()
+
+
+# ==========================================================
+# PROGRAM 3 : 8 QUEENS PROBLEM
+# ==========================================================
+
+N = 8
+
+board = [[0 for i in range(N)] for j in range(N)]
+
+def is_safe(board, row, col):
+
+    for i in range(col):
+        if board[row][i] == 1:
+            return False
+
+    i = row
+    j = col
+
+    while i >= 0 and j >= 0:
+        if board[i][j] == 1:
+            return False
+        i -= 1
+        j -= 1
+
+    i = row
+    j = col
+
+    while i < N and j >= 0:
+        if board[i][j] == 1:
+            return False
+        i += 1
+        j -= 1
+
+    return True
+
+def solve(board, col):
+
+    if col >= N:
+        return True
+
+    for row in range(N):
+
+        if is_safe(board, row, col):
+
+            board[row][col] = 1
+
+            if solve(board, col + 1):
+                return True
+
+            board[row][col] = 0
+
+    return False
+
+if solve(board, 0):
+
+    for i in range(N):
+        for j in range(N):
+            print(board[i][j], end=" ")
+        print()
+
+else:
+    print("No Solution Exists")
+
+
+# ==========================================================
+# PROGRAM 4 : OLA CAB BOOKING
+# ==========================================================
+
+class OlaCab:
+
+    def __init__(self, pickup, destination):
+        self.pickup = pickup
+        self.destination = destination
+        self.cab = ""
+        self.fare = 0
+
+    def select_cab(self, cab):
+
+        self.cab = cab
+
+        if cab == "Mini":
+            self.fare = 150
+
+        elif cab == "Micro":
+            self.fare = 120
+
+        elif cab == "Sedan":
+            self.fare = 250
+
+        elif cab == "Shared":
+            self.fare = 100
+
+        elif cab == "Prime":
+            self.fare = 350
+
+        else:
+            self.fare = -1
+
+    def book_cab(self):
+
+        if self.fare == -1:
+            print("Cab Not Available")
+
+        else:
+            print("Booking Confirmed")
+            print("Pickup :", self.pickup)
+            print("Destination :", self.destination)
+            print("Cab :", self.cab)
+            print("Fare :", self.fare)
+
+pickup = "Chennai"
+destination = "Airport"
+cab = "Sedan"
+
+trip = OlaCab(pickup, destination)
+
+trip.select_cab(cab)
+trip.book_cab()
+
+
+# ==========================================================
+# PROGRAM 5 : UNIFORM COST SEARCH
+# ==========================================================
+
+import heapq
+
+graph = {
+    'S': [('A', 2), ('B', 5)],
+    'A': [('C', 4), ('D', 7)],
+    'B': [('D', 1)],
+    'C': [('G', 3)],
+    'D': [('G', 2)],
+    'G': []
+}
+
+start = 'S'
+goal = 'G'
+
+def uniform_cost_search(graph, start, goal):
+
+    priority_queue = []
+    heapq.heappush(priority_queue, (0, start, [start]))
+
+    visited = set()
+
+    while priority_queue:
+
+        current_cost, current_node, path = heapq.heappop(priority_queue)
+
+        if current_node == goal:
+            print("Least Cost:", current_cost)
+            print("Path:", " -> ".join(path))
+            return
+
+        if current_node not in visited:
+
+            visited.add(current_node)
+
+            for neighbor, cost in graph[current_node]:
+
+                if neighbor not in visited:
+                    total_cost = current_cost + cost
+                    heapq.heappush(priority_queue,
+                                   (total_cost,
+                                    neighbor,
+                                    path + [neighbor]))
+
+    print("No Path Found")
+
+uniform_cost_search(graph, start, goal)
